@@ -1,5 +1,5 @@
 module "cluster" {
-  source = "./modules/kind-cluster"
+  source = "./kind-cluster"
 
   cluster_name = var.cluster_name
   node_image   = var.node_image
@@ -15,7 +15,7 @@ module "cluster" {
 }
 
 module "keycloak" {
-  source = "./modules/keycloak"
+  source = "./keycloak"
 
   admin_password = var.keycloak_admin_password
 
@@ -23,7 +23,7 @@ module "keycloak" {
 }
 
 module "coder" {
-  source = "./modules/coder"
+  source = "./coder"
 
   namespace  = "coder"
   access_url = "http://localhost:8080"
@@ -46,7 +46,7 @@ resource "coderd_template" "data_science" {
 
   versions = [
     {
-      directory = "./templates/data-science"
+      directory = "./coder/workspace-templates/data-science"
       active    = true
       tf_vars = [
         {
@@ -69,7 +69,7 @@ resource "coderd_template" "kubernetes_workspace" {
 
   versions = [
     {
-      directory = "./templates/kubernetes-workspace"
+      directory = "./coder/workspace-templates/kubernetes-workspace"
       active    = true
       tf_vars = [
         {

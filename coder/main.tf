@@ -100,12 +100,44 @@ resource "helm_release" "coder" {
               name  = "CODER_ACCESS_URL"
               value = var.access_url
             },
+            {
+              name  = "PATH"
+              value = "/opt/tofu:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            },
           ],
           local.oidc_env
         )
         service = {
           type = "ClusterIP"
         }
+        initContainers = [
+          {
+            name    = "install-tofu"
+            image   = "busybox:1.36"
+            command = [
+              "sh", "-c",
+              "set -e && wget -qO /tmp/tofu.tar.gz https://github.com/opentofu/opentofu/releases/download/v1.9.1/tofu_1.9.1_linux_amd64.tar.gz && tar -xzf /tmp/tofu.tar.gz -C /tmp && mv /tmp/tofu /opt/tofu/terraform && chmod +x /opt/tofu/terraform"
+            ]
+            volumeMounts = [
+              {
+                name      = "tofu-bin"
+                mountPath = "/opt/tofu"
+              }
+            ]
+          }
+        ]
+        volumes = [
+          {
+            name     = "tofu-bin"
+            emptyDir = {}
+          }
+        ]
+        volumeMounts = [
+          {
+            name      = "tofu-bin"
+            mountPath = "/opt/tofu"
+          }
+        ]
       }
     })
   ]
