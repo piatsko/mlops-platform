@@ -34,29 +34,31 @@ Coder is deployed into the `coder` namespace via its official Helm chart.
 
 The `coder` module also creates `coder-workspaces` namespace with a `Role`/`RoleBinding` granting Coder's service account pod/service/PVC management rights there.
 
-## Workspace template
+## Workspace templates
 
-`templates/kubernetes-workspace/` is a Coder workspace template (uses `coder/coder` provider, not `coder/coderd`). It provisions a Kubernetes pod per workspace with:
-- Selectable base image (default `codercom/enterprise-base:ubuntu`)
-- `code-server` (VS Code in browser) installed on startup
-- `localhost` replaced with `host.docker.internal` in the agent init script (required for kind)
+`coder/workspace-templates/` contains Coder workspace templates (use `coder/coder` provider, not `coder/coderd`):
 
-The root `coderd_template` resource (`coder/coderd` provider) uploads this template to Coder — it only runs when `coder_api_token` is set.
+- **kubernetes-workspace** — Kubernetes pod per workspace; selectable base image (default `codercom/enterprise-base:ubuntu`); `code-server` (VS Code in browser) installed on startup; `localhost` replaced with `host.docker.internal` in the agent init script (required for kind)
+- **data-science** — RStudio + JupyterLab on `rocker/verse`
+
+The `coderd_template` resources in `main.tf` (`coder/coderd` provider) upload these templates to Coder — they only run when `coder_api_token` is set.
 
 ## Module structure
 
 ```
 .
-├── main.tf              # root — calls kind-cluster and coder modules; coderd_template resource
+├── main.tf              # root — calls modules; coderd_template resources
 ├── variables.tf
 ├── outputs.tf
 ├── versions.tf          # required_providers (kind, helm, kubernetes, random, coderd)
 ├── providers.tf         # helm + kubernetes providers (read kubeconfig); coderd provider
-└── modules/
-    ├── kind-cluster/    # kind_cluster resource
-    └── coder/           # namespace + postgresql + secret + coder helm + nodeport svc + RBAC
-└── templates/
-    └── kubernetes-workspace/   # Coder workspace template (coder/coder provider)
+├── kind-cluster/        # kind_cluster resource
+├── coder/               # namespace + postgresql + secret + coder helm + nodeport svc + RBAC
+│   └── workspace-templates/
+│       ├── data-science/
+│       └── kubernetes-workspace/
+├── keycloak/            # keycloak helm + nodeport svc
+└── keycloak-config/     # separate Tofu root — keycloak realm/client config (mrparkers/keycloak provider)
 ```
 
 ## Deployment workflow
