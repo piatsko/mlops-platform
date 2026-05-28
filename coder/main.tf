@@ -3,13 +3,6 @@ locals {
   pg_host     = "coder-db-postgresql.${var.namespace}.svc.cluster.local"
   pg_url      = "postgresql://coder:${local.pg_password}@${local.pg_host}:5432/coder?sslmode=disable"
 
-  oidc_env = var.oidc_issuer_url != "" ? [
-    { name = "CODER_OIDC_ISSUER_URL",   value = var.oidc_issuer_url },
-    { name = "CODER_OIDC_CLIENT_ID",     value = var.oidc_client_id },
-    { name = "CODER_OIDC_CLIENT_SECRET", value = var.oidc_client_secret },
-    { name = "CODER_OIDC_EMAIL_DOMAIN",  value = "*" },
-    { name = "CODER_OIDC_SCOPES",        value = "openid,email,profile" },
-  ] : []
 }
 
 resource "random_password" "pg" {
@@ -105,7 +98,6 @@ resource "helm_release" "coder" {
               value = "/opt/tofu:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
             },
           ],
-          local.oidc_env
         )
         service = {
           type = "ClusterIP"

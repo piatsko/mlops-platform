@@ -9,17 +9,8 @@ module "cluster" {
     var.extra_port_mappings,
     [
       { container_port = 30080, host_port = 8080, protocol = "TCP" }, # Coder
-      { container_port = 30081, host_port = 8081, protocol = "TCP" }, # Keycloak
     ]
   )
-}
-
-module "keycloak" {
-  source = "./keycloak"
-
-  admin_password = var.keycloak_admin_password
-
-  depends_on = [module.cluster]
 }
 
 module "coder" {
@@ -27,10 +18,6 @@ module "coder" {
 
   namespace  = "coder"
   access_url = "http://localhost:8080"
-
-  oidc_issuer_url    = var.oidc_issuer_url
-  oidc_client_id     = var.oidc_client_id
-  oidc_client_secret = var.oidc_client_secret
 
   depends_on = [module.cluster]
 }

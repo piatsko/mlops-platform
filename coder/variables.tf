@@ -40,22 +40,3 @@ variable "node_port" {
   description = "NodePort number for the external Coder service (must match kind extraPortMappings container_port)."
   default     = 30080
 }
-
-variable "oidc_issuer_url" {
-  type        = string
-  description = "OIDC issuer URL (e.g. http://host.docker.internal:8081/realms/coder). Leave empty to disable OIDC."
-  default     = ""
-}
-
-variable "oidc_client_id" {
-  type        = string
-  description = "OIDC client ID registered in the identity provider."
-  default     = ""
-}
-
-variable "oidc_client_secret" {
-  type        = string
-  sensitive   = true
-  description = "OIDC client secret."
-  default     = ""
-}
