@@ -1,0 +1,17 @@
+# helm and kubernetes providers connect via the kubeconfig file that the kind
+# provider writes after cluster creation. Run `tofu apply -target=module.cluster`
+# first on a fresh environment so this file exists before the second full apply.
+provider "helm" {
+  kubernetes {
+    config_path = "${path.module}/${var.cluster_name}-config"
+  }
+}
+
+provider "kubernetes" {
+  config_path = "${path.module}/${var.cluster_name}-config"
+}
+
+provider "coderd" {
+  url   = "http://localhost:8080"
+  token = var.coder_api_token
+}

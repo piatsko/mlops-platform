@@ -1,0 +1,12 @@
+# Terraform state and secrets
+*.tfstate*
+terraform.tfvars
+
+# Terraform working dirs
+.terraform/
+
+# Kubeconfig files written by kind
+*-config
+
+# Claude Code session files
+.claude/
