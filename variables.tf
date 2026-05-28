@@ -23,32 +23,6 @@ variable "coder_api_token" {
   default     = ""
 }
 
-variable "keycloak_admin_password" {
-  type        = string
-  sensitive   = true
-  description = "Keycloak admin console password. Used by both the Helm release and the keycloak provider."
-  default     = "keycloak-admin"
-}
-
-variable "oidc_issuer_url" {
-  type        = string
-  description = "OIDC issuer URL. Set after running keycloak-config/ workspace. Leave empty to disable OIDC."
-  default     = ""
-}
-
-variable "oidc_client_id" {
-  type        = string
-  description = "OIDC client ID. Set after running keycloak-config/ workspace."
-  default     = ""
-}
-
-variable "oidc_client_secret" {
-  type        = string
-  sensitive   = true
-  description = "OIDC client secret. Set after running keycloak-config/ workspace."
-  default     = ""
-}
-
 variable "extra_port_mappings" {
   type = list(object({
     container_port = number

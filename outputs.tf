@@ -23,8 +23,3 @@ output "coder_url" {
   value       = module.coder.access_url
   description = "Open this URL to access Coder."
 }
-
-output "keycloak_url" {
-  value       = module.keycloak.external_url
-  description = "Open this URL to access the Keycloak admin console."
-}
