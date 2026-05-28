@@ -66,11 +66,9 @@ resource "kubernetes_secret_v1" "coder_db_url" {
 # ── Coder ─────────────────────────────────────────────────────────────────────
 
 resource "helm_release" "coder" {
-  name             = "coder"
-  repository       = "https://helm.coder.com/v2"
-  chart            = "coder"
-  version          = var.coder_chart_version
-  namespace        = kubernetes_namespace_v1.coder.metadata[0].name
+  name      = "coder"
+  chart     = "${path.root}/charts/coder_helm_${var.coder_chart_version}.tgz"
+  namespace = kubernetes_namespace_v1.coder.metadata[0].name
   create_namespace = false
   wait             = true
   timeout          = 300

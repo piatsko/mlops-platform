@@ -5,13 +5,10 @@ provider "helm" {
   kubernetes {
     config_path = "${path.module}/${var.cluster_name}-config"
   }
+  repository_cache       = pathexpand("~/Library/Caches/helm/repository")
+  repository_config_path = pathexpand("~/Library/Preferences/helm/repositories.yaml")
 }
 
 provider "kubernetes" {
   config_path = "${path.module}/${var.cluster_name}-config"
-}
-
-provider "coderd" {
-  url   = "http://localhost:8080"
-  token = var.coder_api_token
 }

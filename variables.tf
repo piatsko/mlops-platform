@@ -16,13 +16,6 @@ variable "worker_count" {
   default     = 2
 }
 
-variable "coder_api_token" {
-  type        = string
-  description = "Coder API token. Create one at http://localhost:8080/settings/tokens after completing first-time setup."
-  sensitive   = true
-  default     = ""
-}
-
 variable "extra_port_mappings" {
   type = list(object({
     container_port = number

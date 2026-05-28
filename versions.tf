@@ -18,9 +18,5 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.6"
     }
-    coderd = {
-      source  = "coder/coderd"
-      version = "~> 0.0.16"
-    }
   }
 }

@@ -36,29 +36,28 @@ The `coder` module also creates `coder-workspaces` namespace with a `Role`/`Role
 
 ## Workspace templates
 
-`coder/workspace-templates/` contains Coder workspace templates (use `coder/coder` provider, not `coder/coderd`):
+`coderd/templates/` contains Coder workspace templates (use `coder/coder` provider, not `coder/coderd`):
 
 - **kubernetes-workspace** — Kubernetes pod per workspace; selectable base image (default `codercom/enterprise-base:ubuntu`); `code-server` (VS Code in browser) installed on startup; `localhost` replaced with `host.docker.internal` in the agent init script (required for kind)
-- **data-science** — RStudio + JupyterLab on `rocker/verse`
+- **data-science** — JupyterLab on `jupyter/scipy-notebook`
 
-The `coderd_template` resources in `main.tf` (`coder/coderd` provider) upload these templates to Coder — they only run when `coder_api_token` is set.
+The `coderd` root (`coder/coderd` provider) uploads these templates to Coder — run `tofu apply` inside `coderd/` once you have an API token.
 
 ## Module structure
 
 ```
 .
-├── main.tf              # root — calls modules; coderd_template resources
+├── main.tf              # root — calls kind-cluster and coder modules
 ├── variables.tf
 ├── outputs.tf
-├── versions.tf          # required_providers (kind, helm, kubernetes, random, coderd)
-├── providers.tf         # helm + kubernetes providers (read kubeconfig); coderd provider
+├── versions.tf          # required_providers (kind, helm, kubernetes, random)
+├── providers.tf         # helm + kubernetes providers (read kubeconfig)
 ├── kind-cluster/        # kind_cluster resource
 ├── coder/               # namespace + postgresql + secret + coder helm + nodeport svc + RBAC
-│   └── workspace-templates/
-│       ├── data-science/
-│       └── kubernetes-workspace/
-├── keycloak/            # keycloak helm + nodeport svc
-└── keycloak-config/     # separate Tofu root — keycloak realm/client config (mrparkers/keycloak provider)
+└── coderd/              # separate Tofu root — coderd_template resources + workspace template HCL
+    └── templates/
+        ├── data-science/
+        └── kubernetes-workspace/
 ```
 
 ## Deployment workflow
@@ -68,16 +67,17 @@ The `helm` and `kubernetes` providers require the kubeconfig file to exist befor
 ```bash
 tofu init
 tofu apply -target=module.cluster   # step 1: create cluster, write kubeconfig
-tofu apply                          # step 2: deploy Coder (no template yet)
+tofu apply                          # step 2: deploy Coder
 # Complete first-time Coder setup at http://localhost:8080, then create an API token
-# at http://localhost:8080/settings/tokens and set coder_api_token in terraform.tfvars
-tofu apply                          # step 3: upload workspace template
+# at http://localhost:8080/settings/tokens and set it in coderd/terraform.tfvars
+cd coderd && tofu init && tofu apply # step 3: upload workspace templates
 ```
 
 **Subsequent changes** (cluster already exists):
 
 ```bash
-tofu apply
+tofu apply          # from repo root — cluster + coder
+cd coderd && tofu apply  # workspace templates
 ```
 
 ## Common commands
