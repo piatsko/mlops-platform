@@ -54,10 +54,17 @@ The `coderd` root (`coder/coderd` provider) uploads these templates to Coder —
 ├── providers.tf         # helm + kubernetes providers (read kubeconfig)
 ├── kind-cluster/        # kind_cluster resource
 ├── coder/               # namespace + postgresql + secret + coder helm + nodeport svc + RBAC
-└── coderd/              # separate Tofu root — coderd_template resources + workspace template HCL
-    └── templates/
-        ├── data-science/
-        └── kubernetes-workspace/
+├── coderd/              # separate Tofu root — coderd_template resources + workspace template HCL
+│   └── templates/
+│       ├── data-science/
+│       └── kubernetes-workspace/
+└── kserve/              # separate Tofu root — KServe on Knative mode (on-prem cluster)
+    └── modules/
+        ├── cert-manager/
+        ├── istio/
+        ├── knative/
+        ├── kserve/
+        └── llmisvc/     # optional — Gateway API + LWS + Envoy Gateway + LLMInferenceService
 ```
 
 ## Deployment workflow

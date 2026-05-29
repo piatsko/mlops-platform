@@ -28,26 +28,15 @@ resource "helm_release" "postgresql" {
   wait       = true
   timeout    = 300
 
-  set {
-    name  = "auth.username"
-    value = "coder"
-  }
+  set = [
+    { name = "auth.username",               value = "coder" },
+    { name = "auth.database",               value = "coder" },
+    { name = "primary.persistence.enabled", value = "false" },
+  ]
 
-  set_sensitive {
-    name  = "auth.password"
-    value = local.pg_password
-  }
-
-  set {
-    name  = "auth.database"
-    value = "coder"
-  }
-
-  # no persistent volume needed for a local dev cluster
-  set {
-    name  = "primary.persistence.enabled"
-    value = "false"
-  }
+  set_sensitive = [
+    { name = "auth.password", value = local.pg_password },
+  ]
 }
 
 resource "kubernetes_secret_v1" "coder_db_url" {

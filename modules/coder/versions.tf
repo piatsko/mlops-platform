@@ -2,10 +2,6 @@ terraform {
   required_version = ">= 1.8.0"
 
   required_providers {
-    kind = {
-      source  = "tehcyx/kind"
-      version = "~> 0.7.0"
-    }
     helm = {
       source  = "hashicorp/helm"
       version = ">= 3.0.0"
@@ -17,10 +13,6 @@ terraform {
     random = {
       source  = "hashicorp/random"
       version = "~> 3.6"
-    }
-    null = {
-      source  = "hashicorp/null"
-      version = ">= 3.2.0"
     }
   }
 }
